@@ -36,7 +36,9 @@ type Document struct {
 	CreationDate soap.XSDDateTime `xml:"urn:epcglobal:xsd:1 creationDate,attr,omitempty" json:"creationDate,omitempty"`
 }
 
-type EPC string
+type EPC struct {
+	Value string `xml:",chardata" json:"-,"`
+}
 
 type DocumentIdentification struct {
 	Standard string `xml:"Standard,omitempty" json:"Standard,omitempty"`

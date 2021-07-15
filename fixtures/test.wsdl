@@ -91,6 +91,13 @@
           <s:documentation>The date and time when the process starts.</s:documentation>
         </s:annotation>
       </s:element>
+      <s:complexType name="StringWithAttributes">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="Type" type="s:string"/>
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="GetInfoSoapIn">

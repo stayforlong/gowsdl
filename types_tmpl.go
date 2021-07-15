@@ -150,7 +150,7 @@ var typesTmpl = `
 				{{else}}
 					type {{$typeName}} interface{}
 				{{end}}
-			
+
 				{{if .Restriction.Enumeration}}
 				const (
 					{{with .Restriction}}
@@ -206,20 +206,19 @@ var typesTmpl = `
 					XMLName xml.Name ` + "`xml:\"{{$targetNamespace}} {{$type}}\"`" + `
 				{{end}}
 
-				{{if ne .ComplexContent.Extension.Base ""}}
-					{{template "ComplexContent" .ComplexContent}}
-				{{else if ne .SimpleContent.Extension.Base ""}}
-					{{template "SimpleContent" .SimpleContent}}
-				{{else}}
-					{{template "Elements" .Sequence}}
-					{{template "Any" .Any}}
-					{{template "Elements" .Choice}}
-					{{template "Elements" .SequenceChoice}}
-					{{template "Elements" .All}}
-					{{template "Attributes" .Attributes}}
-				{{end}}
-			}
-		{{end}}
+			{{if ne .ComplexContent.Extension.Base ""}}
+				{{template "ComplexContent" .ComplexContent}}
+			{{else if ne .SimpleContent.Extension.Base ""}}
+				{{template "SimpleContent" .SimpleContent}}
+			{{else}}
+				{{template "Elements" .Sequence}}
+				{{template "Any" .Any}}
+				{{template "Elements" .Choice}}
+				{{template "Elements" .SequenceChoice}}
+				{{template "Elements" .All}}
+				{{template "Attributes" .Attributes}}
+			{{end}}
+		}
 	{{end}}
 {{end}}
 `
