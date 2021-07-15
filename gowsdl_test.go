@@ -190,6 +190,32 @@ func TestEPCISWSDL(t *testing.T) {
 	}
 }
 
+
+func TestStringComplexTypeWithAttributes(t *testing.T) {
+	g, err := NewGoWSDL("fixtures/test.wsdl", "myservice", false, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	resp, err := g.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
+	actual, err := getTypeDeclaration(resp, "StringWithAttributes")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	expected := `type StringWithAttributes struct {
+	Value	string	` + "`" + `xml:",chardata" json:"-,"` + "`" + `
+
+	Type	string	` + "`" + `xml:"Type,attr,omitempty" json:"Type,omitempty"` + "`" + `
+}`
+	if actual != expected {
+		t.Error("got " + actual + " want " + expected)
+	}
+}
+
 func getTypeDeclaration(resp map[string][]byte, name string) (string, error) {
 	source, err := format.Source([]byte(string(resp["header"]) + string(resp["types"])))
 	if err != nil {

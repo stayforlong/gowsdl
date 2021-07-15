@@ -65,6 +65,13 @@
           </s:restriction>
         </s:simpleType>
       </s:attribute>
+      <s:complexType name="StringWithAttributes">
+        <s:simpleContent>
+          <s:extension base="s:string">
+            <s:attribute name="Type" type="s:string"/>
+          </s:extension>
+        </s:simpleContent>
+      </s:complexType>
     </s:schema>
   </wsdl:types>
   <wsdl:message name="GetInfoSoapIn">
