@@ -143,29 +143,25 @@ var typesTmpl = `
 	{{range .ComplexTypes}}
 		{{/* ComplexTypeGlobal */}}
 		{{$name := replaceReservedWords .Name | makePublic}}
-		{{if eq (toGoType .SimpleContent.Extension.Base false) "string"}}
-			type {{$name}} string
-		{{else}}
-			type {{$name}} struct {
-				{{$typ := findNameByType .Name}}
-				{{if ne $name $typ}}
-					XMLName xml.Name ` + "`xml:\"{{$targetNamespace}} {{$typ}}\"`" + `
-				{{end}}
+		type {{$name}} struct {
+			{{$typ := findNameByType .Name}}
+			{{if ne $name $typ}}
+				XMLName xml.Name ` + "`xml:\"{{$targetNamespace}} {{$typ}}\"`" + `
+			{{end}}
 
-				{{if ne .ComplexContent.Extension.Base ""}}
-					{{template "ComplexContent" .ComplexContent}}
-				{{else if ne .SimpleContent.Extension.Base ""}}
-					{{template "SimpleContent" .SimpleContent}}
-				{{else}}
-					{{template "Elements" .Sequence}}
-					{{template "Any" .Any}}
-					{{template "Elements" .Choice}}
-					{{template "Elements" .SequenceChoice}}
-					{{template "Elements" .All}}
-					{{template "Attributes" .Attributes}}
-				{{end}}
-			}
-		{{end}}
+			{{if ne .ComplexContent.Extension.Base ""}}
+				{{template "ComplexContent" .ComplexContent}}
+			{{else if ne .SimpleContent.Extension.Base ""}}
+				{{template "SimpleContent" .SimpleContent}}
+			{{else}}
+				{{template "Elements" .Sequence}}
+				{{template "Any" .Any}}
+				{{template "Elements" .Choice}}
+				{{template "Elements" .SequenceChoice}}
+				{{template "Elements" .All}}
+				{{template "Attributes" .Attributes}}
+			{{end}}
+		}
 	{{end}}
 {{end}}
 `
