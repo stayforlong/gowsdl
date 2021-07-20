@@ -100,6 +100,13 @@ func (xdt *XSDDateTime) UnmarshalXMLAttr(attr xml.Attr) error {
 	return err
 }
 
+// UnmarshalText implements encoding.TextUnmarshaler on XSDDateTime to use time.RFC3339Nano
+func (xdt *XSDDateTime) UnmarshalText(text []byte) error {
+	var err error
+	xdt.innerTime, xdt.hasTz, err = fromString(string(text), time.RFC3339Nano)
+	return err
+}
+
 func fromString(content string, format string) (time.Time, bool, error) {
 	var t time.Time
 	if content == "" {
@@ -225,6 +232,13 @@ func (xd *XSDDate) UnmarshalXMLAttr(attr xml.Attr) error {
 	return err
 }
 
+// UnmarshalText implements encoding.TextUnmarshaler on XSDDate to use dateLayout
+func (xd *XSDDate) UnmarshalText(text []byte) error {
+	var err error
+	xd.innerDate, xd.hasTz, err = fromString(string(text), dateLayout)
+	return err
+}
+
 // CreateXsdDate creates an object represent xsd:datetime object in Golang
 func CreateXsdDate(date time.Time, hasTz bool) XSDDate {
 	return XSDDate{
@@ -294,6 +308,11 @@ func (xt *XSDTime) UnmarshalXML(d *xml.Decoder, start xml.StartElement) error {
 // UnmarshalXMLAttr implements xml.UnmarshalerAttr on XSDTime to use dateTimeLayout
 func (xt *XSDTime) UnmarshalXMLAttr(attr xml.Attr) error {
 	return xt.fromString(attr.Value)
+}
+
+// UnmarshalText implements encoding.TextUnmarshaler on XSDTime to use dateTimeLayout
+func (xt *XSDTime) UnmarshalText(text []byte) error {
+	return xt.fromString(string(text))
 }
 
 func (xt *XSDTime) fromString(content string) error {
