@@ -253,6 +253,8 @@ type options struct {
 	httpHeaders      map[string]string
 	mtom             bool
 	mma              bool
+	saveRawRequest   bool
+	saveRawResponse  bool
 }
 
 var defaultOptions = options{
@@ -334,12 +336,26 @@ func WithMIMEMultipartAttachments() Option {
 	}
 }
 
+func WithSaveRawRequest() Option {
+	return func(o *options) {
+		o.saveRawRequest = true
+	}
+}
+
+func WithSaveRawResponse() Option {
+	return func(o *options) {
+		o.saveRawResponse = true
+	}
+}
+
 // Client is soap client
 type Client struct {
 	url         string
 	opts        *options
 	headers     []interface{}
 	attachments []MIMEMultipartAttachment
+	rawRequest  string
+	rawResponse string
 }
 
 // HTTPClient is a client which can make HTTP requests
@@ -484,6 +500,20 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		client = &http.Client{Timeout: s.opts.contimeout, Transport: tr}
 	}
 
+	if s.opts.saveRawRequest {
+		bodyReader, err := req.GetBody()
+		if err != nil {
+			return err
+		}
+
+		body, err := ioutil.ReadAll(bodyReader)
+		if err != nil {
+			return err
+		}
+
+		s.rawRequest = string(body)
+	}
+
 	res, err := client.Do(req)
 	if err != nil {
 		return err
@@ -496,6 +526,16 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 			StatusCode:   res.StatusCode,
 			ResponseBody: body,
 		}
+	}
+
+	if s.opts.saveRawResponse {
+		rawRes, err := ioutil.ReadAll(res.Body)
+		if err != nil {
+			return err
+		}
+
+		res.Body = ioutil.NopCloser(bytes.NewReader(rawRes))
+		s.rawResponse = string(rawRes)
 	}
 
 	// xml Decoder (used with and without MTOM) cannot handle namespace prefixes (yet),
@@ -538,4 +578,12 @@ func (s *Client) call(ctx context.Context, soapAction string, request, response 
 		*retAttachments = respEnvelope.Attachments
 	}
 	return respEnvelope.Body.ErrorFromFault()
+}
+
+func (s *Client) RawRequest() string {
+	return s.rawRequest
+}
+
+func (s *Client) RawResponse() string {
+	return s.rawResponse
 }
