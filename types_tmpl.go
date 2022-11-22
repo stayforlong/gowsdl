@@ -40,6 +40,7 @@ var typesTmpl = `
 	{{template "Elements" .Extension.Sequence}}
 	{{template "Elements" .Extension.Choice}}
 	{{template "Elements" .Extension.SequenceChoice}}
+	{{template "Elements" .Extension.ChoiceSequence}}
 	{{template "Attributes" .Extension.Attributes}}
 {{end}}
 
@@ -70,6 +71,7 @@ var typesTmpl = `
 		{{else}}
 			{{template "Elements" .Sequence}}
 			{{template "Elements" .Choice}}
+			{{template "Elements" .ChoiceSequence}}
 			{{template "Elements" .SequenceChoice}}
 			{{template "Elements" .All}}
 			{{template "Attributes" .Attributes}}
@@ -214,6 +216,7 @@ var typesTmpl = `
 				{{template "Elements" .Sequence}}
 				{{template "Any" .Any}}
 				{{template "Elements" .Choice}}
+                {{template "Elements" .ChoiceSequence}}
 				{{template "Elements" .SequenceChoice}}
 				{{template "Elements" .All}}
 				{{template "Attributes" .Attributes}}
