@@ -10,6 +10,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net"
@@ -22,6 +23,8 @@ import (
 	"text/template"
 	"time"
 	"unicode"
+
+	"golang.org/x/text/encoding/ianaindex"
 )
 
 const maxRecursion uint8 = 20
@@ -207,7 +210,9 @@ func (g *GoWSDL) unmarshal() error {
 	}
 
 	g.wsdl = new(WSDL)
-	err = xml.Unmarshal(data, g.wsdl)
+	decoder := xml.NewDecoder(bytes.NewReader(data))
+	decoder.CharsetReader = makeCharsetReader
+	err = decoder.Decode(g.wsdl)
 	if err != nil {
 		return err
 	}
@@ -244,8 +249,8 @@ func (g *GoWSDL) resolveXSDExternals(schema *XSDSchema, loc *Location) error {
 		}
 
 		newschema := new(XSDSchema)
-
-		err = xml.Unmarshal(data, newschema)
+		reader := xml.NewDecoder(bytes.NewReader(data))
+		err = reader.Decode(newschema)
 		if err != nil {
 			return err
 		}
@@ -579,6 +584,9 @@ func (g *GoWSDL) findType(message string) string {
 		}
 
 		part := msg.Parts[0]
+		if len(msg.Parts) > 1 && part.Name == "Security" {
+			part = msg.Parts[1]
+		}
 		if part.Type != "" {
 			return stripns(part.Type)
 		}
@@ -720,4 +728,17 @@ func comment(text string) string {
 		return output
 	}
 	return ""
+}
+
+func makeCharsetReader(charset string, reader io.Reader) (io.Reader, error) {
+	enc, err := ianaindex.IANA.Encoding(charset)
+	if err != nil {
+		return nil, fmt.Errorf("charset %s: %s", charset, err.Error())
+	}
+	if enc == nil {
+		// Assume it's compatible with (a subset of) UTF-8 encoding
+		// Bug: https://github.com/golang/go/issues/19421
+		return reader, nil
+	}
+	return enc.NewDecoder().Reader(reader), nil
 }
