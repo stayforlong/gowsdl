@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='ISO-8859-1'?><!-- Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is Metro/2.1 (branches/2.1-6728; 2011-02-03T14:14:58+0000) JAXWS-RI/2.2.3 JAXWS/2.2. --><definitions xmlns:dtns="urn:description7a.services.chrome.com" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Description7a" targetNamespace="urn:description7a.services.chrome.com">
+    <documentation>
+        Test no UTF-8 Ð Ñ Ô 
+    </documentation>
+
+</definitions>
