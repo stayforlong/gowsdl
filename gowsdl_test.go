@@ -321,6 +321,43 @@ func TestEPCISWSDL(t *testing.T) {
 	}
 }
 
+func TestISO8859Charset(t *testing.T) {
+	log.SetFlags(0)
+	log.SetOutput(os.Stdout)
+
+	g, err := NewGoWSDL("./fixtures/no-utf8.wsdl", "myservice", true, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	resp, err := g.Start()
+	if err != nil {
+		t.Fatal(err)
+	}
+	data := new(bytes.Buffer)
+	data.Write(resp["header"])
+	data.Write(resp["types"])
+	data.Write(resp["operations"])
+	data.Write(resp["soap"])
+
+	// go fmt the generated code
+	source, err := format.Source(data.Bytes())
+	if err != nil {
+		t.Fatal(err)
+	}
+	expectedBytes, err := ioutil.ReadFile("./fixtures/no-utf8.src")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	actual := string(source)
+	expected := string(expectedBytes)
+	if actual != expected {
+		_ = ioutil.WriteFile("./fixtures/no-utf8_gen.src", source, 0664)
+		t.Error("got source ./fixtures/no-utf8_gen.src but expected ./fixtures/no-utf8.src")
+	}
+}
+
 func TestStringComplexTypeWithAttributes(t *testing.T) {
 	g, err := NewGoWSDL("fixtures/test.wsdl", "myservice", false, true)
 	if err != nil {
