@@ -36,9 +36,7 @@ type Document struct {
 	CreationDate soap.XSDDateTime `xml:"urn:epcglobal:xsd:1 creationDate,attr,omitempty" json:"creationDate,omitempty"`
 }
 
-type EPC struct {
-	Value string `xml:",chardata" json:"-,"`
-}
+type EPC string
 
 type DocumentIdentification struct {
 	Standard string `xml:"Standard,omitempty" json:"Standard,omitempty"`
@@ -61,9 +59,11 @@ type Partner struct {
 }
 
 type PartnerIdentification struct {
+	XMLName xml.Name `xml:"http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader Identifier"`
+
 	Value string `xml:",chardata" json:"-,"`
 
-	Authority string `xml:"Authority,attr,omitempty" json:"Authority,omitempty"`
+	Authority string `xml:"http://www.unece.org/cefact/namespaces/StandardBusinessDocumentHeader Authority,attr,omitempty" json:"Authority,omitempty"`
 }
 
 type ContactInformation struct {

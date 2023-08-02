@@ -321,7 +321,6 @@ func TestEPCISWSDL(t *testing.T) {
 	}
 }
 
-
 func TestStringComplexTypeWithAttributes(t *testing.T) {
 	g, err := NewGoWSDL("fixtures/test.wsdl", "myservice", false, true)
 	if err != nil {
@@ -340,7 +339,7 @@ func TestStringComplexTypeWithAttributes(t *testing.T) {
 	expected := `type StringWithAttributes struct {
 	Value	string	` + "`" + `xml:",chardata" json:"-,"` + "`" + `
 
-	Type	string	` + "`" + `xml:"Type,attr,omitempty" json:"Type,omitempty"` + "`" + `
+	Type	string	` + "`" + `xml:"http://www.mnb.hu/webservices/ Type,attr,omitempty" json:"Type,omitempty"` + "`" + `
 }`
 	if actual != expected {
 		t.Error("got " + actual + " want " + expected)

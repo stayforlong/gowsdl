@@ -219,6 +219,7 @@ var typesTmpl = `
 				{{template "Attributes" .Attributes}}
 			{{end}}
 		}
+		{{end}}
 	{{end}}
 {{end}}
 `
